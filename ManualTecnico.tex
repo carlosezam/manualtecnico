@@ -1,0 +1,302 @@
+\documentclass[letterpaper,12pt,openany,oneside]{book}
+\usepackage[total={16.59cm,21.94cm},top=3cm,left=3cm]{geometry}
+\usepackage[spanish,es-noshorthands]{babel} %partición de palabras
+
+%Paquete para símbolos matematicos
+\usepackage{amsmath,amssymb,amsfonts,latexsym,cancel} %paquetes para simbolos matematicos
+\usepackage[utf8]{inputenc} % codificación de entrada
+\usepackage[T1]{fontenc} % fundición de salida
+
+\usepackage{tikz}
+\usepackage{tikz-uml}
+\usepackage{listings}
+\usepackage{color}
+
+\usepackage{wrapfig} %figuras flotantes
+%\usepackage{pgfplots} %ploteo
+\usepackage[rtlf]{floatflt} %figuras
+\usepackage{float}
+\usepackage{subfigure}
+\usepackage{caption} %texto en las figuras
+%\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage[breaklinks=true]{hyperref} %enlaces
+\renewcommand{\lstlistlistingname}{Códigos fuente}
+\renewcommand{\lstlistingname}{Código fuente}
+\begin{document}
+\lstset{literate=
+	{á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+	{Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	{à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+	{À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+	{ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+	{Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+	{â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+	{Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+	{œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+	{ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+	{ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+	{€}{{\EUR}}1 {£}{{\pounds}}1 {ñ}{{\H{n}}}1 {~} {$\sim$}{1} 
+}
+
+
+\definecolor{background}{HTML}{FCFCFD}
+\definecolor{numbercolor}{rgb}{0.5,0.5,0.5}
+\lstdefinestyle{ezam}
+{
+	%caption={[Definición de \lstname] arcivo \lstname},
+	language=C++,
+	mathescape=true,
+	captionpos=b,
+	%title=ashasha \lstname,
+	backgroundcolor=\color{background},
+	breakatwhitespace=false,
+	breaklines=true,
+	tabsize=2,
+	showtabs=false,
+	showspaces=false,
+	showstringspaces=false,
+	numbers=left, numberstyle=\tiny\color{numbercolor}, numbersep=5pt,
+	basicstyle=\footnotesize\ttfamily,
+	keywordstyle=\color[HTML]{0071A8}, %218100 C30000
+	commentstyle=\color[HTML]{777777},
+	morecomment=[1]=\color{Crimson},
+	stringstyle=\color[HTML]{534bae},
+	identifierstyle=\color[HTML]{C30000} %002171 0071A8
+}	
+%cerulean, gray, burntorange
+
+
+
+	%define el título
+	\author{Escobar Zamora Carlos\\Camacho Bello Darcy Michelle\\Farrera Ramos Javier Antonio}
+	\title{Implementación de un algoritmo de sincronización de semáforos usando Inteligencia Artificial}
+	
+	% genera el título
+	\maketitle
+	
+	% inserta el índice
+	{\setlength{\baselineskip}{1\baselineskip}
+		\tableofcontents
+		\lstlistoflistings
+	}
+
+	\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+	\setlength{\baselineskip}{1.5\baselineskip}
+
+
+\chapter*{Introducción}
+El propósito del siguiente manual es documentar el código del proyecto para facilitar su posterior mantenimiento. Para ello, se incluye el código completo
+que ha sido previamente auto-documentado siguiendo el estilo de \emph{doxygen}. El diagrama de clases de abajo, se anexa como apoyo visual para comprender mejor las clases que componen el sistema y sus relaciones.
+\begin{figure}[h]
+	\begin{tikzpicture}
+	
+	\umlsimpleclass[y=-2.5]{MySemaforo}
+	\umlsimpleclass[x=-6.6, y=0]{FuzzySet}
+	\umlsimpleclass[x=6.5, y=-2.5]{MySensor}
+	\umlsimpleclass[type=abstract]{FuzzySemaforo}
+	
+	\umlsimpleclass[x=-4, y=3.5]{TriangularMF}
+	\umlsimpleclass[x=0, y=3.5]{SigmoidalMF}
+	\umlsimpleclass[x=4, y=3.5]{GaussianaMF}
+	
+	\umlsimpleclass[x=-6.6, y=7]{FuzzyValue}
+	\umlsimpleclass[x=0, y=7, type=abstract]{MembershipFunction}
+	\umlsimpleclass[x=6.5, y=7, type=abstract]{SensorVehiculos}
+	
+	\umlunicompo[geometry=|-|, anchor1=140, mult1=1, mult2=0..*, pos2=2.8]{FuzzySemaforo}{TriangularMF}
+	\umlunicompo[geometry=|-|, anchor1=90, mult1=1, mult2=0..*, pos2=2.8]{FuzzySemaforo}{SigmoidalMF}
+	\umlunicompo[geometry=|-|, anchor1=40, mult1=1, mult2=0..*, pos2=2.8]{FuzzySemaforo}{GaussianaMF}
+	
+	\umlunicompo[mult1=1, pos1=0, align1=right, mult2=0..*, pos2=1, align2=left]{FuzzySemaforo}{FuzzySet}
+	\umluniassoc[geometry=-|, anchor2=-130, attr2=cuenta vehículos|1, pos2=1, align2=right, align1=left, mult1=1, pos1=0]{FuzzySemaforo}{SensorVehiculos}
+	\umlimpl[geometry=|-|]{TriangularMF}{MembershipFunction}
+	\umlimpl[geometry=|-|]{SigmoidalMF}{MembershipFunction}
+	\umlimpl[geometry=|-|]{GaussianaMF}{MembershipFunction}
+	
+	\umlimpl{MySensor}{SensorVehiculos}
+	\umluniassoc[mult1=1, pos1=0, align1=right, mult2=0..1, pos2=1, align2=left]{MembershipFunction}{FuzzyValue}
+	\umluniassoc[mult1=1, pos1=0.05, mult2=0..1, pos2=1, align2=left]{FuzzySet}{FuzzyValue}	
+	
+	\umlimpl{MySemaforo}{FuzzySemaforo}
+	\end{tikzpicture}
+	\caption{Diagrama de clases del sistema}
+	\label{uml:relaciones}
+\end{figure}
+
+\chapter{Código Fuente}\label{chapter:codigofuente}
+\begin{wrapfigure}{r}{4cm}
+	\includegraphics[width=4cm]{logo_cpp11.jpg}
+	%\captionof{figure}{C++ 11}
+\end{wrapfigure}
+El proyecto fue construido en el lenguaje de programación \textbf{C++}, usando el estándar \textbf{C++11}, usando el paradigma \textbf{Orietado a Objetos}. Las clases desarrolladas, como es habitual en C++, fueron \emph{separadas en Interfaz e Implementación} en archivos \textbf{hpp} y \textbf{cpp}, respectivamente (algo considerado como buena práctica en C++).
+
+Debido a que el código se encuentra repartido a lo largo de varios archivos, para facilitar su compresión, se muestra organizado a lo largo de las siguientes secciones de manera conceptual. Además, en cada sección se hace referencia al archivo fuente donde se puede encontrar dicho código.
+
+\section{Archivo Main}
+El archivo Main, por convención, suele contener el código encargado de echar a andar todo el sistema, esta no es la excepción. A continuación se muestra el código encargado de configurar y ejecutar el sistema.
+
+Este archivo es de suma importancia ya que es aquí donde se definen los detalles de las implementaciones finales tanto del \emph{semaforo} como del \emph{sensor de vehiculos}; también aquí es donde se configuran las \textit{avenidas}, \textit{fases} y \textit{número de carriles} de la intersección. En pocas palabras, este es el único archivo de todo el sistema que el usuario deberia modificar (no obstante, es libre de hacer mejoras o ajustes al código donde considere oportuno o necesario)
+
+Debido a la importancia de este archivo y que se explicará de manera detallada. El resto de los archivos que se muestran están igualmente auto-documentados y se agregan algunas explicaciones donde se considera necesario.
+
+\textbf{Directivas del preprocesador} en esta caso indican al pre-procesador que incluya
+las definiciones de funciones que serán útiles dentro de este archivo fuente.
+\lstinputlisting[
+style=ezam, firstline=8, lastline=33, firstnumber=8,
+caption={[Archivo Main: \textit{directivas}] Extracto de \textit{Main.cpp}}
+]{Semaforo/Main.cpp}
+
+\textbf{Definición de la clase de pruebas \emph{MySensor}}
+Esta clase debe ser implementada adecuadamente para
+proporcionar al sistema el conteo de automóviles de la
+intersección. Sin embargo, para fines de prueba, se ha
+implementado de manera que le solicita al usuario que
+proporcione dichos números a través del teclado.
+\lstinputlisting[
+style=ezam, firstline=44, lastline=97, firstnumber=44,
+caption={[Archivo Main: \textit{clase Mysensor}] Extracto de \textit{Main.cpp}}
+]{Semaforo/Main.cpp}
+
+
+\textbf{Definición de la clase de pruebas \emph{MySemaforo}}
+Los detalles de implementación de esta clase también dependen del usuario
+final. Al delegar a esta clase los detalles, se permite que el usuario
+implemente el algoritmo en un Arduino usando las funciones disponibles como:
+DigitalWrite y AnalogWrite; en una Raspberry mediante los puertos GPIO ó
+en algun PIC.
+\lstinputlisting[
+style=ezam, firstline=111, lastline=185, firstnumber=111,
+caption={[Archivo Main: \textit{clase MySemaforo}] Extracto de \textit{Main.cpp}}
+]{Semaforo/Main.cpp}
+
+\textbf{Función \emph{main}}
+Los detalles de implementación de esta clase también dependen del usuario
+final. Al delegar a esta clase los detalles, se permite que el usuario
+implemente el algoritmo en un Arduino usando las funciones disponibles como:
+DigitalWrite y AnalogWrite; en una Raspberry mediante los puertos GPIO ó
+en algun PIC.
+\lstinputlisting[
+style=ezam, firstline=191, firstnumber=191,
+caption={[Archivo Main: \textit{función main}] Extracto de \textit{Main.cpp}}
+]{Semaforo/Main.cpp}
+\newpage
+\section{Clase \textit{FuzzySemaforo}}
+La clase FuzzySemaforo se encarga de integrar la inferencia
+difusa con el algoritmo de sincronización de semáforos. En otras
+palabras, se encarga de conectar todas las piezas: Sensor,
+Semáforo y Sistema de inferencia. Además delega los detalles de
+implementación final mediante la función \lstinline[style=ezam]|set_lights()|
+
+\subsection{Interfaz de la clase \emph{FuzzySemaforo}:}
+\lstinputlisting[
+style=ezam, firstline=23, lastline=103,
+caption={[Interfaz de la clase \textit{FuzzySemaforo}] Extracto de \textit{FuzzySemaforo.hpp}}
+]{Semaforo/FuzzySemaforo.hpp}
+
+\subsection{Implementación de la clase \emph{FuzzySemaforo}:}
+\lstinputlisting[
+style=ezam,
+firstline=5,
+caption={[Implementación de la clase \textit{FuzzySemaforo}] Extracto de \textit{FuzzySemaforo.cpp}}
+]{Semaforo/FuzzySemaforo.cpp}
+\pagebreak
+
+\section{Clase \textit{SensorVehiculos}}
+Este archivo define la clase SensorVehiculos, el propósito de esta clase es definir la función virtual pura \lstinline[style=ezam]|read()|. La clase FuzzySemaforo recibe una referencia de este tipo para obtener los cantidad de carros de las avenidas. El usuario final debe implementar dicha función.
+
+\subsection{Definición de la clase \emph{SensorVehiculos}:}
+\lstinputlisting[
+style=ezam, firstline=21, lastline=33,
+caption={[Definición de la clase \textit{SensorVehiculos}] Extracto de \textit{SensorVehiculos.hpp}}
+]{Semaforo/SensorVehiculos.hpp}
+\pagebreak
+
+
+\section{Clase \textit{FuzzySet}}
+Este archivo define la clase FuzzySet que representa un conjunto difuso.
+Los conjuntos difusos son una parte central en el proceso de inferencia.
+Esta clase define las operaciones elementales sobre conjuntos difusos como: implicación, desfusificación y conjunción.
+
+\subsection{Interfaz de la clase \emph{FuzzySet}:}
+\lstinputlisting[
+style=ezam, firstline=28, lastline=62,
+caption={[Interfaz de la clase \textit{FuzzySet}] Extracto de \textit{FuzzySet.hpp}}
+]{Semaforo/FuzzySet.hpp}
+
+
+\subsection{Implementación de la clase \emph{FuzzySet}:}
+\lstinputlisting[
+style=ezam, firstline=5, lastline=167,
+caption={[Implementación de la clase \textit{FuzzySet}] Extracto de \textit{FuzzySet.cpp}}
+]{Semaforo/FuzzySet.cpp}
+\pagebreak
+
+
+
+\section{Clase \textit{FuzzyValue}}
+Las funciones de membresía devuelven el valor de fusificación como un objeto de esta clase, permitiendo así usar los operadores de unión, intersección y complemento sobre los resultados obtenidos.
+
+\subsection{Interfaz de la clase \emph{FuzzyValue}:}
+\lstinputlisting[
+style=ezam, firstline=20, lastline=49,
+caption={[Interfaz de la clase \textit{FuzzyValue}] Extracto de \textit{FuzzyValue.hpp}}
+]{Semaforo/FuzzyValue.hpp}
+
+
+\subsection{Implementación de la clase \emph{FuzzyValue}:}
+\lstinputlisting[
+style=ezam, firstline=3, lastline=73,
+caption={[Implementación de la clase \textit{FuzzyValue}] Extracto de \textit{FuzzyValue.cpp}}
+]{Semaforo/FuzzyValue.cpp}
+\pagebreak
+
+\section{Clase \textit{MembershipFunction} }
+Una parte fundamental del proyecto son las funciones de membresía, estas se encuentran en el paquete MembershipFunction. La interfaz y la implementación de las clases, se encuentran separadas en los archivos \emph{MembershipFunction.hpp} y \textit{MembershipFunction.cpp}, respectivamente.
+
+En seguida se muestran los extractos de ambos archivos correspondientes a cada clase.
+
+\subsection{Definición de la clase \textit{MembershipFunction}}
+La clase MembershipFunction es meramente una interfaz que define una función virtual pura que deberá ser implementada por las clases derivadas.
+
+El resto de clases que hacen uso de funciones de membresía, lo hacen a través de referencias del tipo de esta clase: \emph{MembershipFunction}. Y cualquier función de membresía que el usuario desee definir debe extender de dicha clase. El propósito de esta clase es declarar la \emph{sobrecarga del operador '()'} como una \emph{función virtual pura}. De esta manera se permite el procesamiento polimórfico de las funciones.
+
+Código de la definición de la clase \emph{MembershipFunction}:
+\lstinputlisting[style=ezam, firstline=27, lastline=48, name=Clase MembershipFunction, caption={Definición de la clase \textit{MembershipFunction}}]{Semaforo/MembershipFunction.hpp}
+\pagebreak
+\section{Clase \textit{TriangularMF}}
+Esta clase, como su nombre lo sugiere, representa una función de membresía triangular. Para poder ser usada como tal dentro del marco de trabajo, debe extender de la clase anteriormente mencionada. 
+
+\subsection{Interfaz de la clase \emph{TriangularMF}:}
+\lstinputlisting[style=ezam, firstline=52, lastline=71, caption={Interfaz de la clase \textit{TriangularMF}}]{Semaforo/MembershipFunction.hpp}
+
+\subsection{Implementación de la clase \emph{TriangularMF}:}
+\lstinputlisting[style=ezam, firstline=7, lastline=40, caption={Implementación de la clase \textit{TriangularMF}}]{Semaforo/MembershipFunction.cpp}
+\pagebreak
+
+\section{Clase \textit{SigmoidalMF}}
+El trabajo realizado con esta función es análogo a la anterior.
+
+\subsection{Interfaz de la clase \emph{SigmoidalMF}:}
+\lstinputlisting[style=ezam, firstline=75, lastline=93, caption={Interfaz de la clase \textit{SigmoidalMF}}]{Semaforo/MembershipFunction.hpp}
+
+\subsection{Implementación de la clase \emph{SigmoidalMF}:}
+\lstinputlisting[style=ezam, firstline=42, lastline=69, caption={Implementación de la clase \textit{SigmoidalMF}}]{Semaforo/MembershipFunction.cpp}
+\pagebreak
+
+\section{Clase \textit{GaussianaMF}}
+El trabajo realizado con esta función es igualmente análogo a la primera.
+
+\subsection{Interfaz de la clase \emph{GaussianaMF}:}
+\lstinputlisting[style=ezam, firstline=97, lastline=115, caption={Interfaz de la clase \textit{GaussianaMF}}]{Semaforo/MembershipFunction.hpp}
+
+\subsection{Implementación de la clase \emph{GaussianaMF}:}
+\lstinputlisting[style=ezam, firstline=71, lastline=98, caption={Implementación de la clase \textit{GaussianaMF}}]{Semaforo/MembershipFunction.cpp}
+\pagebreak
+
+
+
+
+
+
+
+\end{document}

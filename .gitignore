@@ -1,0 +1,10 @@
+*.aux
+*.lof
+*.lol
+*.out
+*.log
+*.toc
+*.gz
+*.pdf
+*.o
+!ManualTecnico.pdf
